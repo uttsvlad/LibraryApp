@@ -4,16 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import ru.utts.springcourse.dao.PersonDAO;
 import ru.utts.springcourse.models.Person;
+import ru.utts.springcourse.repositories.PeopleRepository;
+import ru.utts.springcourse.services.PeopleService;
 
 @Component
 public class PersonValidator implements Validator {
-    private final PersonDAO personDAO;
+    private final PeopleService peopleService;
 
     @Autowired
-    public PersonValidator(PersonDAO personDAO) {
-        this.personDAO = personDAO;
+    public PersonValidator(PeopleService peopleService) {
+        this.peopleService = peopleService;
     }
 
     @Override
@@ -25,7 +26,7 @@ public class PersonValidator implements Validator {
     public void validate(Object target, Errors errors) {
         Person person = (Person) target;
 
-        if (personDAO.getPersonByFullName(person.getFullName()).isPresent())
+        if (peopleService.findByFullName(person.getFullName()).isPresent())
             errors.rejectValue("fullName", "", "This full name is already taken!");
     }
 }
